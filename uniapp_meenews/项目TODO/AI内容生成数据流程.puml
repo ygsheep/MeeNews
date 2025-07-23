@@ -1,0 +1,148 @@
+@startuml AI内容生成数据流程
+!theme plain
+skinparam activityFontName "Microsoft YaHei"
+skinparam noteFontName "Microsoft YaHei"
+
+title 羊咩快报 - AI内容生成数据流程图
+
+start
+
+:news_sources\n新闻源配置;
+note right: 配置RSS、API等数据源
+
+:定时爬取任务启动;
+
+:raw_news\n存储原始新闻;
+note right
+  - 去重检查
+  - 情感分析
+  - 重要性评分
+  - 自动分类
+end note
+
+if (内容质量检查) then (通过)
+  :创建AI生成任务\ncontent_generation_tasks;
+  note right
+    任务类型：
+    - 文本生成
+    - 音频生成  
+    - 视频生成
+  end note
+  
+  :选择AI模型\nai_model_configs;
+  note right
+    - GPT-4 (文本)
+    - Azure TTS (音频)
+    - Runway (视频)
+  end note
+  
+  :AI内容生成;
+  
+  partition "文本生成流程" {
+    :ai_commentary\n生成解说稿;
+    note right
+      - 摘要生成
+      - 风格调整
+      - 质量评分
+    end note
+  }
+  
+  partition "音频生成流程" {
+    :选择语音类型\nvoice_types;
+    :ai_audio_content\n生成音频;
+    note right
+      - TTS合成
+      - 音质优化
+      - 时长控制
+    end note
+  }
+  
+  partition "视频生成流程" {
+    :ai_video_content\n生成视频;
+    note right
+      - AI主播
+      - 背景合成
+      - 字幕添加
+    end note
+  }
+  
+  :内容标签标注\ncontent_tag_relations;
+  note right
+    - AI自动标注
+    - 人工审核标注
+  end note
+  
+  :内容审核\ncontent_moderation;
+  note right
+    - AI初审
+    - 人工复审
+    - 质量把控
+  end note
+  
+  if (审核通过) then (是)
+    :发布内容;
+    :更新统计数据\napi_usage_stats;
+    
+    partition "用户交互" {
+      :用户播放内容;
+      :记录播放历史\nplay_history;
+      :更新行为统计\nuser_behavior_stats;
+      :生成互动数据;
+      
+      fork
+        :comments\n用户评论;
+      fork again
+        :likes\n点赞收藏;
+      fork again
+        :shares\n分享传播;
+      end fork
+    }
+    
+    :content_interaction_stats\n内容统计分析;
+    
+    :更新推荐数据\nrecommendations;
+    note right
+      基于：
+      - 用户画像
+      - 行为历史  
+      - 内容热度
+      - 社交关系
+    end note
+    
+    :trending_topics\n热点趋势分析;
+    
+    :notifications\n推送通知;
+    note right
+      - 个性化推荐
+      - 关注更新
+      - 社交互动
+    end note
+    
+  else (否)
+    :记录审核原因;
+    :任务失败处理;
+  endif
+  
+else (不通过)
+  :标记为低质量内容;
+  :duplicate_of\n重复内容处理;
+endif
+
+:系统配置更新\nsystem_configs;
+note right
+  - 模型参数调优
+  - 质量阈值调整
+  - 成本控制优化
+end note
+
+stop
+
+note top
+  **数据流关键指标：**
+  - 内容生成成功率 > 95%
+  - AI审核准确率 > 90%  
+  - 用户播放完成率 > 70%
+  - 推荐点击率 > 15%
+end note
+
+@enduml

@@ -1,0 +1,1633 @@
+openapi: 3.0.3
+info:
+  title: 羊咩快报 API
+  version: 1.0.0
+  description: 后端接口文档
+paths:
+  /ai/tts:
+    post:
+      operationId: ai_tts_create
+      description: AI音频生成任务API（Mock实现）
+      summary: AI音频生成任务提交
+      tags:
+      - ai
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AITTSGenerateResponse'
+          description: ''
+  /ai/tts/{task_id}:
+    get:
+      operationId: ai_tts_retrieve
+      description: AI音频生成任务状态API（Mock实现）
+      summary: AI音频生成任务状态查询
+      parameters:
+      - in: path
+        name: task_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - ai
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AITTSStatusResponse'
+          description: ''
+  /audio-article-sync/{id}:
+    get:
+      operationId: audio_article_sync_retrieve
+      description: 获取音频-文章同步映射
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - audio-article-sync
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AudioArticleSync'
+          description: ''
+  /auth/login:
+    post:
+      operationId: auth_login_create
+      description: 用户登录API
+      summary: 用户登录
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Login'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Login'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+          description: ''
+  /auth/refresh:
+    post:
+      operationId: auth_refresh_create
+      description: Token刷新API，返回自定义响应格式
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /auth/register:
+    post:
+      operationId: auth_register_create
+      description: 用户注册API
+      summary: 用户注册
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Register'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Register'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Register'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterResponse'
+          description: ''
+  /categories:
+    get:
+      operationId: categories_list
+      description: 分类列表API
+      tags:
+      - categories
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NewsCategory'
+          description: ''
+  /content/:
+    get:
+      operationId: content_list
+      tags:
+      - content
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RawNews'
+          description: ''
+  /content/{content_id}/stats:
+    get:
+      operationId: content_stats_retrieve
+      description: 内容统计API，支持获取总计和按天统计
+      summary: 内容统计（总计/按天）
+      parameters:
+      - in: path
+        name: content_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - content
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentStatsResponse'
+          description: ''
+  /content/{id}:
+    get:
+      operationId: content_retrieve
+      description: 内容详情API
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - content
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RawNews'
+          description: ''
+  /content/{id}/moderation:
+    get:
+      operationId: content_moderation_retrieve
+      description: 内容审核API，支持提交审核和获取审核历史
+      summary: 内容审核（提交/获取历史）
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - content
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ContentModerationResponse'
+          description: ''
+    post:
+      operationId: content_moderation_create
+      description: 内容审核API，支持提交审核和获取审核历史
+      summary: 内容审核（提交/获取历史）
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - content
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ContentModerationResponse'
+          description: ''
+  /content/{id}/tags:
+    get:
+      operationId: content_tags_retrieve
+      description: 内容标签关联API，支持打标签和获取标签
+      summary: 内容标签关联（打标签/获取标签）
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - content
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ContentTagRelationResponse'
+          description: ''
+    post:
+      operationId: content_tags_create_2
+      description: 内容标签关联API，支持打标签和获取标签
+      summary: 内容标签关联（打标签/获取标签）
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - content
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ContentTagRelationResponse'
+          description: ''
+  /content/{id}/:
+    get:
+      operationId: content_retrieve_2
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this 原始新闻.
+        required: true
+      tags:
+      - content
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RawNews'
+          description: ''
+  /content/{id}/category/:
+    get:
+      operationId: content_category_list
+      description: 获取指定分类下的内容，支持分页、排序、时长筛选。
+      summary: 根据分类获取内容
+      parameters:
+      - in: query
+        name: duration_max
+        schema:
+          type: integer
+        description: 最大时长(秒)
+      - in: query
+        name: duration_min
+        schema:
+          type: integer
+        description: 最小时长(秒)
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this 原始新闻.
+        required: true
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: 页码
+      - in: query
+        name: page_size
+        schema:
+          type: integer
+        description: 每页数量
+      - in: query
+        name: sort
+        schema:
+          type: string
+        description: 排序方式(latest|popular|hot|duration)
+      tags:
+      - content
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RawNews'
+              examples:
+                科技资讯内容示例:
+                  value:
+                  - id: 101
+                    title: AI驱动的新闻推荐系统上线
+                    content: 羊咩快报平台正式发布AI驱动的新闻推荐系统，提升用户个性化体验。
+                    summary: AI推荐系统助力个性化资讯推送。
+                    author: 新闻编辑部
+                    source_url: https://news.yangmie.com/ai/101
+                    image_urls:
+                    - https://cdn.yangmie.com/images/ai-news-101.jpg
+                    published_at: '2025-07-20T10:00:00Z'
+                    category: 2
+                    tags:
+                    - AI
+                    - 推荐
+                    - 新闻
+                    keywords:
+                    - 人工智能
+                    - 个性化推荐
+                    - 新闻平台
+                    sentiment_score: 0.92
+                    importance_score: 0.95
+                    is_processed: true
+                    is_duplicate: false
+                    language: zh-CN
+                    created_at: '2025-07-20T10:00:00Z'
+                    updated_at: '2025-07-20T10:00:00Z'
+                  description: 真实业务场景下的科技资讯内容示例。
+          description: ''
+  /content/public:
+    get:
+      operationId: content_public_list
+      description: |-
+        公开内容列表API
+        GET /content/public
+        支持分页、分类、type、sort
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - content
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRawNewsList'
+          description: ''
+  /content/recommend:
+    get:
+      operationId: content_recommend_list
+      description: 内容推荐API，支持多媒体类型、分类、标签筛选
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - content
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRawNewsList'
+          description: ''
+  /content/search:
+    get:
+      operationId: content_search_list
+      description: 内容搜索API，支持多媒体类型、分类、标签筛选
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - content
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRawNewsList'
+          description: ''
+  /content/tags:
+    get:
+      operationId: content_tags_list
+      description: 内容标签列表与创建API
+      tags:
+      - content
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ContentTag'
+          description: ''
+    post:
+      operationId: content_tags_create
+      description: 内容标签列表与创建API
+      tags:
+      - content
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContentTag'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ContentTag'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ContentTag'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentTag'
+          description: ''
+  /content/trending:
+    get:
+      operationId: content_trending_list
+      description: |-
+        热门内容API
+        GET /content/trending
+        支持 period, category_id, limit
+      tags:
+      - content
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RawNews'
+          description: ''
+  /search/suggestions:
+    get:
+      operationId: search_suggestions_retrieve
+      description: |-
+        搜索建议API
+        GET /search/suggestions?q=xxx&limit=5
+      summary: 搜索建议
+      tags:
+      - search
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchSuggestionsResponse'
+          description: ''
+  /user/play-progress:
+    get:
+      operationId: user_play_progress_retrieve
+      description: 获取/更新用户播放进度
+      tags:
+      - user
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPlayProgress'
+          description: ''
+    put:
+      operationId: user_play_progress_update
+      description: 获取/更新用户播放进度
+      tags:
+      - user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserPlayProgress'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserPlayProgress'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserPlayProgress'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPlayProgress'
+          description: ''
+    patch:
+      operationId: user_play_progress_partial_update
+      description: 获取/更新用户播放进度
+      tags:
+      - user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserPlayProgress'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUserPlayProgress'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUserPlayProgress'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPlayProgress'
+          description: ''
+  /users/avatar:
+    post:
+      operationId: users_avatar_create
+      description: 头像上传API
+      summary: 头像上传
+      tags:
+      - users
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AvatarUpload'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AvatarUpload'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AvatarUploadResponse'
+          description: ''
+  /users/profile:
+    get:
+      operationId: users_profile_retrieve
+      description: 获取和更新用户信息API
+      summary: 用户信息获取与更新
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfileResponse'
+          description: ''
+    put:
+      operationId: users_profile_update
+      description: 获取和更新用户信息API
+      summary: 用户信息获取与更新
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProfileResponse'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserProfileResponse'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserProfileResponse'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfileResponse'
+          description: ''
+components:
+  schemas:
+    AITTSGenerateResponse:
+      type: object
+      properties:
+        task_id:
+          type: string
+        status:
+          type: string
+        estimated_duration:
+          type: integer
+        audio_url:
+          type: string
+          nullable: true
+      required:
+      - audio_url
+      - estimated_duration
+      - status
+      - task_id
+    AITTSStatusResponse:
+      type: object
+      properties:
+        task_id:
+          type: string
+        status:
+          type: string
+        audio_url:
+          type: string
+      required:
+      - audio_url
+      - status
+      - task_id
+    AudioArticleSync:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        sync_map:
+          title: 同步点映射
+          description: '如[{"audio_time": 12, "article_pos": 3}]'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        audio:
+          type: integer
+        article:
+          type: integer
+      required:
+      - article
+      - audio
+      - created_at
+      - id
+      - sync_map
+      - updated_at
+    AvatarUpload:
+      type: object
+      description: 头像上传序列化器
+      properties:
+        avatar:
+          type: string
+          format: uri
+      required:
+      - avatar
+    AvatarUploadResponse:
+      type: object
+      properties:
+        avatar_url:
+          type: string
+      required:
+      - avatar_url
+    BlankEnum:
+      enum:
+      - ''
+    ContentModerationResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        status:
+          type: string
+        moderator:
+          type: string
+          nullable: true
+        moderation_reason:
+          type: string
+          nullable: true
+        ai_score:
+          type: number
+          format: double
+          nullable: true
+        ai_flags:
+          nullable: true
+        user_reports_count:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+      required:
+      - ai_flags
+      - ai_score
+      - created_at
+      - id
+      - moderation_reason
+      - moderator
+      - status
+      - user_reports_count
+    ContentStatsResponse:
+      type: object
+      properties:
+        total:
+          allOf:
+          - $ref: '#/components/schemas/ContentStatsTotal'
+          nullable: true
+        daily:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContentStatsTotal'
+      required:
+      - daily
+      - total
+    ContentStatsTotal:
+      type: object
+      properties:
+        view_count:
+          type: integer
+        play_count:
+          type: integer
+        like_count:
+          type: integer
+        comment_count:
+          type: integer
+        share_count:
+          type: integer
+        favorite_count:
+          type: integer
+        download_count:
+          type: integer
+        avg_rating:
+          type: number
+          format: double
+          nullable: true
+        total_play_time:
+          type: integer
+        avg_play_time:
+          type: integer
+        completion_rate:
+          type: number
+          format: double
+      required:
+      - avg_play_time
+      - avg_rating
+      - comment_count
+      - completion_rate
+      - download_count
+      - favorite_count
+      - like_count
+      - play_count
+      - share_count
+      - total_play_time
+      - view_count
+    ContentTag:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          title: 标签名称
+          maxLength: 50
+        slug:
+          type: string
+          title: URL标识
+          maxLength: 50
+          pattern: ^[-a-zA-Z0-9_]+$
+        description:
+          type: string
+          nullable: true
+          title: 标签描述
+        tag_type:
+          allOf:
+          - $ref: '#/components/schemas/TagTypeEnum'
+          title: 标签类型
+        color_code:
+          type: string
+          nullable: true
+          title: 标签颜色
+          maxLength: 7
+        background_color:
+          type: string
+          nullable: true
+          title: 背景色
+          maxLength: 7
+        icon:
+          type: string
+          nullable: true
+          title: 图标
+          maxLength: 50
+        supported_content_types:
+          title: 支持的内容类型
+        usage_count:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          title: 使用次数
+        content_count:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          title: 关联内容数
+        popularity_score:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          title: 热度分值
+        trending_score:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          title: 趋势分值
+        is_active:
+          type: boolean
+          title: 是否启用
+        is_featured:
+          type: boolean
+          title: 是否推荐
+        is_trending:
+          type: boolean
+          title: 是否热门
+        is_auto_generated:
+          type: boolean
+          title: 是否自动生成
+        synonyms:
+          nullable: true
+          title: 同义词
+        search_weight:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+          title: 搜索权重
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 创建时间
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 更新时间
+        category:
+          type: integer
+          nullable: true
+          title: 所属分类
+        related_tags:
+          type: array
+          items:
+            type: integer
+            title: 相关标签
+          title: 相关标签
+      required:
+      - created_at
+      - id
+      - name
+      - updated_at
+    ContentTagRelationResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        content_type:
+          type: string
+        object_id:
+          type: integer
+        tag:
+          type: string
+        relevance_score:
+          type: number
+          format: double
+        is_auto_tagged:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+      required:
+      - content_type
+      - created_at
+      - id
+      - is_auto_tagged
+      - object_id
+      - relevance_score
+      - tag
+    ContentTypeEnum:
+      enum:
+      - audio
+      - video
+      - article
+      type: string
+      description: |-
+        * `audio` - 音频
+        * `video` - 视频
+        * `article` - 文章
+    GenderEnum:
+      enum:
+      - male
+      - female
+      - other
+      type: string
+      description: |-
+        * `male` - 男
+        * `female` - 女
+        * `other` - 其他
+    Login:
+      type: object
+      description: 用户登录序列化器
+      properties:
+        login:
+          type: string
+        password:
+          type: string
+          writeOnly: true
+      required:
+      - login
+      - password
+    LoginResponse:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/UserProfile'
+        token:
+          type: object
+          additionalProperties: {}
+      required:
+      - token
+      - user
+    NewsCategory:
+      type: object
+      description: 资讯分类序列化器，支持递归children
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          title: 分类名称
+          maxLength: 50
+        name_en:
+          type: string
+          nullable: true
+          title: 英文名称
+          maxLength: 50
+        description:
+          type: string
+          nullable: true
+          title: 分类描述
+        icon_url:
+          type: string
+          format: uri
+          nullable: true
+          title: 图标链接
+          maxLength: 255
+        color_code:
+          type: string
+          nullable: true
+          title: 主题色
+          maxLength: 7
+        children:
+          type: string
+          readOnly: true
+      required:
+      - children
+      - id
+      - name
+    NullEnum:
+      enum:
+      - null
+    PaginatedRawNewsList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RawNews'
+    PatchedUserPlayProgress:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        content_type:
+          allOf:
+          - $ref: '#/components/schemas/ContentTypeEnum'
+          title: 内容类型
+        content_id:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          title: 内容ID
+        progress:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          title: 进度
+          description: 单位：秒或百分比
+        last_played_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 最后播放时间
+        extra_data:
+          nullable: true
+          title: 扩展信息
+        user:
+          type: integer
+          readOnly: true
+    RawNews:
+      type: object
+      description: 原始新闻内容序列化器
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        type:
+          allOf:
+          - $ref: '#/components/schemas/TypeEnum'
+          title: 内容类型
+        source:
+          type: string
+          nullable: true
+          title: 来源
+          maxLength: 100
+        title:
+          type: string
+          title: 标题
+          maxLength: 500
+        content:
+          type: string
+          title: 内容
+        summary:
+          type: string
+          nullable: true
+          title: 摘要
+        author:
+          type: string
+          nullable: true
+          title: 作者
+          maxLength: 100
+        source_url:
+          type: string
+          format: uri
+          title: 原始链接
+          maxLength: 500
+        image_urls:
+          nullable: true
+          title: 图片链接
+        published_at:
+          type: string
+          format: date-time
+          title: 发布时间
+        crawled_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 抓取时间
+        language:
+          type: string
+          title: 语言
+          maxLength: 10
+        tags:
+          nullable: true
+          title: 标签
+        keywords:
+          nullable: true
+          title: 关键词
+        sentiment_score:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+          nullable: true
+          title: 情感分值
+        importance_score:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+          nullable: true
+          title: 重要性分值
+        relevance_score:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+          nullable: true
+          title: 相关性分值
+        quality_score:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+          nullable: true
+          title: 质量分值
+        is_processed:
+          type: boolean
+          title: 是否已处理
+        is_duplicate:
+          type: boolean
+          title: 是否重复
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 创建时间
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 更新时间
+        category:
+          type: integer
+          nullable: true
+          title: 分类
+        generated_article:
+          type: integer
+          nullable: true
+          title: 生成的文章
+      required:
+      - content
+      - crawled_at
+      - created_at
+      - id
+      - published_at
+      - source_url
+      - title
+      - updated_at
+    Register:
+      type: object
+      description: 用户注册序列化器
+      properties:
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        password:
+          type: string
+          writeOnly: true
+        password_confirm:
+          type: string
+          writeOnly: true
+        nickname:
+          type: string
+          nullable: true
+          title: 昵称
+          maxLength: 50
+        phone:
+          type: string
+          nullable: true
+          title: 手机号
+          maxLength: 20
+      required:
+      - password
+      - password_confirm
+      - username
+    RegisterResponse:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/UserProfile'
+        token:
+          type: object
+          additionalProperties: {}
+      required:
+      - token
+      - user
+    SearchSuggestionItem:
+      type: object
+      properties:
+        text:
+          type: string
+        type:
+          type: string
+        highlight:
+          type: string
+      required:
+      - highlight
+      - text
+      - type
+    SearchSuggestionsResponse:
+      type: object
+      properties:
+        suggestions:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchSuggestionItem'
+      required:
+      - suggestions
+    TagTypeEnum:
+      enum:
+      - general
+      - topic
+      - emotion
+      - category
+      - location
+      - person
+      - event
+      - technology
+      - trend
+      type: string
+      description: |-
+        * `general` - 通用
+        * `topic` - 话题
+        * `emotion` - 情感
+        * `category` - 分类
+        * `location` - 地域
+        * `person` - 人物
+        * `event` - 事件
+        * `technology` - 技术
+        * `trend` - 趋势
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+      required:
+      - access
+      - refresh
+    TypeEnum:
+      enum:
+      - audio
+      - video
+      - article
+      type: string
+      description: |-
+        * `audio` - 音频
+        * `video` - 视频
+        * `article` - 文章
+    UserPlayProgress:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        content_type:
+          allOf:
+          - $ref: '#/components/schemas/ContentTypeEnum'
+          title: 内容类型
+        content_id:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          title: 内容ID
+        progress:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          title: 进度
+          description: 单位：秒或百分比
+        last_played_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 最后播放时间
+        extra_data:
+          nullable: true
+          title: 扩展信息
+        user:
+          type: integer
+          readOnly: true
+      required:
+      - content_id
+      - content_type
+      - id
+      - last_played_at
+      - user
+    UserProfile:
+      type: object
+      description: 用户信息序列化器
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        password:
+          type: string
+          maxLength: 128
+        last_login:
+          type: string
+          format: date-time
+          nullable: true
+        is_superuser:
+          type: boolean
+          title: Superuser status
+          description: Designates that this user has all permissions without explicitly
+            assigning them.
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_staff:
+          type: boolean
+          title: Staff status
+          description: Designates whether the user can log into this admin site.
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect
+            this instead of deleting accounts.
+        date_joined:
+          type: string
+          format: date-time
+        nickname:
+          type: string
+          nullable: true
+          title: 昵称
+          maxLength: 50
+        avatar_url:
+          type: string
+          format: uri
+          nullable: true
+          title: 头像
+          maxLength: 255
+        phone:
+          type: string
+          nullable: true
+          title: 手机号
+          maxLength: 20
+        bio:
+          type: string
+          nullable: true
+          title: 个人简介
+        is_verified:
+          type: boolean
+          title: 是否已认证
+        premium_until:
+          type: string
+          format: date-time
+          nullable: true
+          title: 会员到期时间
+        interest_tags:
+          nullable: true
+          title: 兴趣标签
+        listening_preferences:
+          nullable: true
+          title: 听音偏好
+        location:
+          type: string
+          nullable: true
+          title: 位置信息
+          maxLength: 100
+        last_login_at:
+          type: string
+          format: date-time
+          nullable: true
+          title: 最后登录时间
+        gender:
+          nullable: true
+          title: 性别
+          oneOf:
+          - $ref: '#/components/schemas/GenderEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        birth_date:
+          type: string
+          format: date
+          nullable: true
+          title: 出生日期
+        last_login_ip:
+          type: string
+          nullable: true
+          title: 最后登录IP
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        groups:
+          type: array
+          items:
+            type: integer
+          description: The groups this user belongs to. A user will get all permissions
+            granted to each of their groups.
+        user_permissions:
+          type: array
+          items:
+            type: integer
+          description: Specific permissions for this user.
+      required:
+      - created_at
+      - id
+      - password
+      - updated_at
+      - username
+    UserProfileResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        email:
+          type: string
+        nickname:
+          type: string
+          nullable: true
+        avatar_url:
+          type: string
+          nullable: true
+        phone:
+          type: string
+          nullable: true
+        bio:
+          type: string
+          nullable: true
+        is_verified:
+          type: boolean
+        premium_until:
+          type: string
+          format: date-time
+          nullable: true
+        interest_tags:
+          nullable: true
+        listening_preferences:
+          nullable: true
+        location:
+          type: string
+          nullable: true
+        last_login_at:
+          type: string
+          format: date-time
+          nullable: true
+        gender:
+          type: string
+          nullable: true
+        birth_date:
+          type: string
+          format: date
+          nullable: true
+        last_login_ip:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+      - avatar_url
+      - bio
+      - birth_date
+      - created_at
+      - email
+      - gender
+      - id
+      - interest_tags
+      - is_verified
+      - last_login_at
+      - last_login_ip
+      - listening_preferences
+      - location
+      - nickname
+      - phone
+      - premium_until
+      - updated_at
+      - username
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

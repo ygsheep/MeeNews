@@ -1,0 +1,684 @@
+@startuml 羊咩快报数据库设计
+!define table(x) class x << (T,#FFAAAA) >>
+!define view(x) class x << (V,#FFAAFF) >>
+!define enum(x) class x << (E,#FFFFAA) >>
+
+title 羊咩快报AI资讯平台 - 数据库关系图
+
+' 用户系统
+table(users) {
+    + id: BIGINT [PK]
+    --
+    username: VARCHAR(50) [UNIQUE]
+    email: VARCHAR(100) [UNIQUE]
+    password_hash: VARCHAR(255)
+    nickname: VARCHAR(50)
+    avatar_url: VARCHAR(255)
+    phone: VARCHAR(20)
+    birth_date: DATE
+    gender: ENUM
+    bio: TEXT
+    is_active: BOOLEAN
+    is_verified: BOOLEAN
+    premium_until: DATETIME
+    interest_tags: JSON
+    listening_preferences: JSON
+    location: VARCHAR(100)
+    created_at: TIMESTAMP
+    updated_at: TIMESTAMP
+    last_login_at: TIMESTAMP
+}
+
+table(user_preferences) {
+    + id: BIGINT [PK]
+    --
+    user_id: BIGINT [FK]
+    language: VARCHAR(10)
+    theme: ENUM
+    audio_quality: ENUM
+    auto_play: BOOLEAN
+    notification_enabled: BOOLEAN
+    push_news: BOOLEAN
+    push_comments: BOOLEAN
+    preferred_voice: VARCHAR(50)
+    playback_speed: DECIMAL(3,1)
+    scene_preferences: JSON
+    created_at: TIMESTAMP
+    updated_at: TIMESTAMP
+}
+
+table(user_profiles) {
+    + id: BIGINT [PK]
+    --
+    user_id: BIGINT [FK]
+    age_group: ENUM
+    interest_categories: JSON
+    preferred_content_length: ENUM
+    preferred_time_slots: JSON
+    active_days: JSON
+    device_preference: ENUM
+    content_freshness_preference: DECIMAL(3,2)
+    diversity_preference: DECIMAL(3,2)
+    interaction_frequency: ENUM
+    social_activity_level: ENUM
+    news_reading_speed: ENUM
+    sentiment_preference: ENUM
+    last_updated_at: TIMESTAMP
+    created_at: TIMESTAMP
+}
+
+' 资讯内容系统
+table(news_categories) {
+    + id: BIGINT [PK]
+    --
+    name: VARCHAR(50)
+    name_en: VARCHAR(50)
+    description: TEXT
+    icon_url: VARCHAR(255)
+    color_code: VARCHAR(7)
+    parent_id: BIGINT [FK]
+    sort_order: INT
+    is_active: BOOLEAN
+    keywords: JSON
+    created_at: TIMESTAMP
+    updated_at: TIMESTAMP
+}
+
+table(news_sources) {
+    + id: BIGINT [PK]
+    --
+    name: VARCHAR(100)
+    website_url: VARCHAR(255)
+    rss_url: VARCHAR(255)
+    api_endpoint: VARCHAR(255)
+    source_type: ENUM
+    credibility_score: DECIMAL(3,2)
+    is_active: BOOLEAN
+    crawl_interval: INT
+    last_crawled_at: TIMESTAMP
+    config: JSON
+    created_at: TIMESTAMP
+    updated_at: TIMESTAMP
+}
+
+table(raw_news) {
+    + id: BIGINT [PK]
+    --
+    source_id: BIGINT [FK]
+    title: VARCHAR(500)
+    content: TEXT
+    summary: TEXT
+    author: VARCHAR(100)
+    source_url: VARCHAR(500) [UNIQUE]
+    image_urls: JSON
+    published_at: TIMESTAMP
+    crawled_at: TIMESTAMP
+    language: VARCHAR(10)
+    category_id: BIGINT [FK]
+    tags: JSON
+    keywords: JSON
+    sentiment_score: DECIMAL(3,2)
+    importance_score: DECIMAL(3,2)
+    is_processed: BOOLEAN
+    is_duplicate: BOOLEAN
+    duplicate_of: BIGINT [FK]
+}
+
+' AI生成内容系统
+table(ai_commentary) {
+    + id: BIGINT [PK]
+    --
+    raw_news_id: BIGINT [FK]
+    title: VARCHAR(500)
+    script: TEXT
+    summary: VARCHAR(1000)
+    commentary_style: ENUM
+    target_duration: INT
+    voice_type: VARCHAR(50)
+    language: VARCHAR(10)
+    generation_model: VARCHAR(50)
+    generation_prompt: TEXT
+    quality_score: DECIMAL(3,2)
+    is_reviewed: BOOLEAN
+    reviewed_by: BIGINT [FK]
+    reviewed_at: TIMESTAMP
+    is_published: BOOLEAN
+    published_at: TIMESTAMP
+    created_at: TIMESTAMP
+    updated_at: TIMESTAMP
+}
+
+table(ai_audio_content) {
+    + id: BIGINT [PK]
+    --
+    commentary_id: BIGINT [FK]
+    audio_url: VARCHAR(500)
+    duration: INT
+    file_size: BIGINT
+    bitrate: INT
+    format: VARCHAR(10)
+    voice_type: VARCHAR(50)
+    speech_rate: DECIMAL(3,1)
+    tts_service: VARCHAR(50)
+    generation_time: INT
+    is_active: BOOLEAN
+    play_count: BIGINT
+    like_count: INT
+    share_count: INT
+    created_at: TIMESTAMP
+    updated_at: TIMESTAMP
+}
+
+table(ai_video_content) {
+    + id: BIGINT [PK]
+    --
+    commentary_id: BIGINT [FK]
+    video_url: VARCHAR(500)
+    thumbnail_url: VARCHAR(500)
+    duration: INT
+    file_size: BIGINT
+    resolution: VARCHAR(20)
+    format: VARCHAR(10)
+    avatar_type: VARCHAR(50)
+    background_style: VARCHAR(50)
+    generation_service: VARCHAR(50)
+    generation_time: INT
+    is_active: BOOLEAN
+    play_count: BIGINT
+    like_count: INT
+    share_count: INT
+    created_at: TIMESTAMP
+    updated_at: TIMESTAMP
+}
+
+' 社区系统
+table(user_follows) {
+    + id: BIGINT [PK]
+    --
+    follower_id: BIGINT [FK]
+    following_id: BIGINT [FK]
+    follow_type: ENUM
+    notification_enabled: BOOLEAN
+    created_at: TIMESTAMP
+}
+
+table(comments) {
+    + id: BIGINT [PK]
+    --
+    user_id: BIGINT [FK]
+    content_type: ENUM
+    content_id: BIGINT
+    parent_id: BIGINT [FK]
+    content: TEXT
+    reply_to_user_id: BIGINT [FK]
+    like_count: INT
+    reply_count: INT
+    is_pinned: BOOLEAN
+    is_hidden: BOOLEAN
+    sentiment_score: DECIMAL(3,2)
+    created_at: TIMESTAMP
+    updated_at: TIMESTAMP
+}
+
+table(likes) {
+    + id: BIGINT [PK]
+    --
+    user_id: BIGINT [FK]
+    target_type: ENUM
+    target_id: BIGINT
+    is_like: BOOLEAN
+    created_at: TIMESTAMP
+}
+
+table(shares) {
+    + id: BIGINT [PK]
+    --
+    user_id: BIGINT [FK]
+    content_type: ENUM
+    content_id: BIGINT
+    share_platform: ENUM
+    share_text: TEXT
+    share_image_url: VARCHAR(500)
+    ip_address: VARCHAR(45)
+    device_info: JSON
+    created_at: TIMESTAMP
+}
+
+table(topics) {
+    + id: BIGINT [PK]
+    --
+    name: VARCHAR(100) [UNIQUE]
+    description: TEXT
+    cover_url: VARCHAR(500)
+    creator_id: BIGINT [FK]
+    category_id: BIGINT [FK]
+    follow_count: INT
+    content_count: INT
+    today_content_count: INT
+    is_trending: BOOLEAN
+    is_official: BOOLEAN
+    status: ENUM
+    last_content_at: TIMESTAMP
+    created_at: TIMESTAMP
+    updated_at: TIMESTAMP
+}
+
+table(topic_follows) {
+    + id: BIGINT [PK]
+    --
+    user_id: BIGINT [FK]
+    topic_id: BIGINT [FK]
+    notification_enabled: BOOLEAN
+    created_at: TIMESTAMP
+}
+
+' 播放与行为系统
+table(play_history) {
+    + id: BIGINT [PK]
+    --
+    user_id: BIGINT [FK]
+    content_type: ENUM
+    content_id: BIGINT
+    raw_news_id: BIGINT [FK]
+    play_duration: INT
+    total_duration: INT
+    completion_rate: DECIMAL(5,2)
+    play_source: ENUM
+    device_type: VARCHAR(20)
+    device_info: JSON
+    play_speed: DECIMAL(3,1)
+    quality: VARCHAR(20)
+    network_type: ENUM
+    ip_address: VARCHAR(45)
+    location_info: JSON
+    session_id: VARCHAR(64)
+    created_at: TIMESTAMP
+}
+
+table(favorites) {
+    + id: BIGINT [PK]
+    --
+    user_id: BIGINT [FK]
+    content_type: ENUM
+    content_id: BIGINT
+    folder_name: VARCHAR(50)
+    tags: JSON
+    notes: TEXT
+    is_private: BOOLEAN
+    created_at: TIMESTAMP
+    updated_at: TIMESTAMP
+}
+
+table(user_behavior_stats) {
+    + id: BIGINT [PK]
+    --
+    user_id: BIGINT [FK]
+    date: DATE
+    total_play_time: INT
+    total_play_count: INT
+    audio_play_time: INT
+    video_play_time: INT
+    favorite_count: INT
+    share_count: INT
+    comment_count: INT
+    like_count: INT
+    search_count: INT
+    active_hours: JSON
+    preferred_categories: JSON
+    avg_completion_rate: DECIMAL(5,2)
+    created_at: TIMESTAMP
+    updated_at: TIMESTAMP
+}
+
+table(content_interaction_stats) {
+    + id: BIGINT [PK]
+    --
+    content_type: ENUM
+    content_id: BIGINT
+    date: DATE
+    play_count: INT
+    unique_play_count: INT
+    total_play_time: INT
+    avg_play_time: INT
+    completion_count: INT
+    like_count: INT
+    comment_count: INT
+    share_count: INT
+    favorite_count: INT
+    avg_rating: DECIMAL(3,2)
+    bounce_rate: DECIMAL(5,2)
+    retention_rate: JSON
+    traffic_source: JSON
+    created_at: TIMESTAMP
+    updated_at: TIMESTAMP
+}
+
+' 推荐系统
+table(recommendations) {
+    + id: BIGINT [PK]
+    --
+    user_id: BIGINT [FK]
+    content_type: ENUM
+    content_id: BIGINT
+    algorithm_type: ENUM
+    recommendation_score: DECIMAL(5,4)
+    confidence_score: DECIMAL(5,4)
+    reasons: JSON
+    context_info: JSON
+    position_in_list: INT
+    list_type: ENUM
+    is_viewed: BOOLEAN
+    is_clicked: BOOLEAN
+    is_played: BOOLEAN
+    is_liked: BOOLEAN
+    is_shared: BOOLEAN
+    interaction_time: TIMESTAMP
+    session_id: VARCHAR(64)
+    created_at: TIMESTAMP
+}
+
+table(trending_topics) {
+    + id: BIGINT [PK]
+    --
+    keyword: VARCHAR(100)
+    category_id: BIGINT [FK]
+    trend_type: ENUM
+    mention_count: INT
+    search_count: INT
+    engagement_score: DECIMAL(8,4)
+    velocity_score: DECIMAL(8,4)
+    related_news_count: INT
+    geographic_scope: ENUM
+    age_group_distribution: JSON
+    peak_time: TIME
+    trend_start_time: TIMESTAMP
+    trend_end_time: TIMESTAMP
+    related_keywords: JSON
+    sentiment_distribution: JSON
+    is_active: BOOLEAN
+    created_at: TIMESTAMP
+    updated_at: TIMESTAMP
+}
+
+' 通知系统
+table(notifications) {
+    + id: BIGINT [PK]
+    --
+    user_id: BIGINT [FK]
+    notification_type: ENUM
+    title: VARCHAR(200)
+    content: TEXT
+    data: JSON
+    sender_id: BIGINT [FK]
+    related_type: ENUM
+    related_id: BIGINT
+    action_url: VARCHAR(500)
+    priority: ENUM
+    is_read: BOOLEAN
+    is_clicked: BOOLEAN
+    read_at: TIMESTAMP
+    clicked_at: TIMESTAMP
+    expires_at: TIMESTAMP
+    created_at: TIMESTAMP
+}
+
+table(push_records) {
+    + id: BIGINT [PK]
+    --
+    notification_id: BIGINT [FK]
+    user_id: BIGINT [FK]
+    push_type: ENUM
+    target_address: VARCHAR(255)
+    title: VARCHAR(200)
+    content: TEXT
+    push_data: JSON
+    push_service: VARCHAR(50)
+    status: ENUM
+    error_message: TEXT
+    retry_count: INT
+    scheduled_at: TIMESTAMP
+    sent_at: TIMESTAMP
+    delivered_at: TIMESTAMP
+    clicked_at: TIMESTAMP
+    device_token: VARCHAR(255)
+    device_type: VARCHAR(20)
+    created_at: TIMESTAMP
+    updated_at: TIMESTAMP
+}
+
+' 系统配置与标签
+table(system_configs) {
+    + id: BIGINT [PK]
+    --
+    config_key: VARCHAR(100) [UNIQUE]
+    config_value: TEXT
+    description: TEXT
+    data_type: ENUM
+    is_encrypted: BOOLEAN
+    category: ENUM
+    is_public: BOOLEAN
+    created_at: TIMESTAMP
+    updated_at: TIMESTAMP
+}
+
+table(content_tags) {
+    + id: BIGINT [PK]
+    --
+    name: VARCHAR(50) [UNIQUE]
+    category: ENUM
+    color_code: VARCHAR(7)
+    icon_url: VARCHAR(255)
+    description: TEXT
+    usage_count: INT
+    is_system_tag: BOOLEAN
+    is_active: BOOLEAN
+    created_at: TIMESTAMP
+    updated_at: TIMESTAMP
+}
+
+table(content_tag_relations) {
+    + id: BIGINT [PK]
+    --
+    content_type: ENUM
+    content_id: BIGINT
+    tag_id: BIGINT [FK]
+    relevance_score: DECIMAL(3,2)
+    is_auto_tagged: BOOLEAN
+    tagged_by: BIGINT [FK]
+    created_at: TIMESTAMP
+}
+
+table(ai_model_configs) {
+    + id: BIGINT [PK]
+    --
+    model_name: VARCHAR(100)
+    model_type: ENUM
+    provider: VARCHAR(50)
+    api_endpoint: VARCHAR(255)
+    model_version: VARCHAR(50)
+    max_tokens: INT
+    temperature: DECIMAL(3,2)
+    top_p: DECIMAL(3,2)
+    frequency_penalty: DECIMAL(3,2)
+    presence_penalty: DECIMAL(3,2)
+    cost_per_token: DECIMAL(8,6)
+    rate_limit_rpm: INT
+    rate_limit_tpm: INT
+    is_active: BOOLEAN
+    priority: INT
+    config_json: JSON
+    created_at: TIMESTAMP
+    updated_at: TIMESTAMP
+}
+
+table(api_usage_stats) {
+    + id: BIGINT [PK]
+    --
+    model_config_id: BIGINT [FK]
+    date: DATE
+    request_count: INT
+    token_count: BIGINT
+    success_count: INT
+    error_count: INT
+    total_cost: DECIMAL(10,4)
+    avg_response_time: INT
+    peak_hour: INT
+    error_types: JSON
+    created_at: TIMESTAMP
+    updated_at: TIMESTAMP
+}
+
+table(content_generation_tasks) {
+    + id: BIGINT [PK]
+    --
+    task_type: ENUM
+    raw_news_id: BIGINT [FK]
+    model_config_id: BIGINT [FK]
+    input_data: JSON
+    output_data: JSON
+    status: ENUM
+    priority: ENUM
+    progress_percentage: INT
+    estimated_duration: INT
+    actual_duration: INT
+    error_message: TEXT
+    retry_count: INT
+    max_retries: INT
+    scheduled_at: TIMESTAMP
+    started_at: TIMESTAMP
+    completed_at: TIMESTAMP
+    created_at: TIMESTAMP
+    updated_at: TIMESTAMP
+}
+
+' 管理后台系统
+table(admin_users) {
+    + id: BIGINT [PK]
+    --
+    username: VARCHAR(50) [UNIQUE]
+    email: VARCHAR(100) [UNIQUE]
+    password_hash: VARCHAR(255)
+    name: VARCHAR(100)
+    avatar_url: VARCHAR(255)
+    role: ENUM
+    permissions: JSON
+    is_active: BOOLEAN
+    last_login_at: TIMESTAMP
+    last_login_ip: VARCHAR(45)
+    created_at: TIMESTAMP
+    updated_at: TIMESTAMP
+}
+
+table(content_moderation) {
+    + id: BIGINT [PK]
+    --
+    content_type: ENUM
+    content_id: BIGINT
+    status: ENUM
+    moderator_id: BIGINT [FK]
+    moderation_reason: TEXT
+    ai_score: DECIMAL(3,2)
+    ai_flags: JSON
+    user_reports_count: INT
+    priority: ENUM
+    moderated_at: TIMESTAMP
+    created_at: TIMESTAMP
+    updated_at: TIMESTAMP
+}
+
+' 搜索系统
+table(search_history) {
+    + id: BIGINT [PK]
+    --
+    user_id: BIGINT [FK]
+    query: VARCHAR(200)
+    search_type: ENUM
+    result_count: INT
+    filter_conditions: JSON
+    clicked_result_id: BIGINT
+    clicked_result_type: ENUM
+    session_id: VARCHAR(64)
+    ip_address: VARCHAR(45)
+    device_info: JSON
+    created_at: TIMESTAMP
+}
+
+table(popular_searches) {
+    + id: BIGINT [PK]
+    --
+    keyword: VARCHAR(100)
+    search_count: INT
+    category_id: BIGINT [FK]
+    date: DATE
+    hour_distribution: JSON
+    age_group_distribution: JSON
+    region_distribution: JSON
+    created_at: TIMESTAMP
+    updated_at: TIMESTAMP
+}
+
+table(voice_types) {
+    + id: BIGINT [PK]
+    --
+    name: VARCHAR(50) [UNIQUE]
+    display_name: VARCHAR(100)
+    gender: ENUM
+    language: VARCHAR(10)
+    provider: VARCHAR(50)
+    sample_url: VARCHAR(500)
+    is_premium: BOOLEAN
+    is_active: BOOLEAN
+    sort_order: INT
+    created_at: TIMESTAMP
+}
+
+' 主要关系定义
+users ||--o{ user_preferences : "has"
+users ||--o{ user_profiles : "has"
+users ||--o{ user_follows : "follower"
+users ||--o{ user_follows : "following"
+users ||--o{ comments : "writes"
+users ||--o{ likes : "gives"
+users ||--o{ shares : "makes"
+users ||--o{ topics : "creates"
+users ||--o{ topic_follows : "follows"
+users ||--o{ play_history : "plays"
+users ||--o{ favorites : "collects"
+users ||--o{ user_behavior_stats : "generates"
+users ||--o{ recommendations : "receives"
+users ||--o{ notifications : "receives"
+users ||--o{ push_records : "receives"
+users ||--o{ search_history : "searches"
+
+news_categories ||--o{ news_categories : "parent"
+news_categories ||--o{ raw_news : "categorizes"
+news_categories ||--o{ topics : "categorizes"
+news_categories ||--o{ trending_topics : "categorizes"
+news_categories ||--o{ popular_searches : "categorizes"
+
+news_sources ||--o{ raw_news : "provides"
+
+raw_news ||--o{ raw_news : "duplicate"
+raw_news ||--o{ ai_commentary : "generates"
+raw_news ||--o{ play_history : "references"
+raw_news ||--o{ content_generation_tasks : "processes"
+
+ai_commentary ||--o{ ai_audio_content : "produces"
+ai_commentary ||--o{ ai_video_content : "produces"
+admin_users ||--o{ ai_commentary : "reviews"
+
+comments ||--o{ comments : "replies"
+users ||--o{ comments : "replies_to"
+
+content_tags ||--o{ content_tag_relations : "tags"
+admin_users ||--o{ content_tag_relations : "assigns"
+
+ai_model_configs ||--o{ api_usage_stats : "tracks"
+ai_model_configs ||--o{ content_generation_tasks : "uses"
+
+admin_users ||--o{ content_moderation : "moderates"
+
+notifications ||--o{ push_records : "sends"
+users ||--o{ notifications : "sends"
+
+@enduml

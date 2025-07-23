@@ -1,0 +1,551 @@
+---
+alwaysApply: true
+---
+
+TITLE: imageView2 API Usage Examples
+DESCRIPTION: Practical examples demonstrating how to use the `imageView2` API to perform common image processing tasks such as proportional scaling, fixed-dimension scaling, and quality adjustment, by constructing specific URL requests.
+SOURCE: https://doc.dcloud.net.cn/uniCloud/ext-storage/dev
+
+LANGUAGE: URL
+CODE:
+```
+https://dora-doc.qiniu.com/gogopher.jpg?imageView2/1/w/200/h/200
+```
+
+LANGUAGE: URL
+CODE:
+```
+https://dora-doc.qiniu.com/gogopher.jpg?imageView2/2/w/200
+```
+
+LANGUAGE: URL
+CODE:
+```
+https://dora-doc.qiniu.com/gogopher.jpg?imageView2/2/h/200
+```
+
+LANGUAGE: URL
+CODE:
+```
+https://dora-doc.qiniu.com/gogopher.jpg?imageView2/1/w/200/h/200/q/55
+```
+
+----------------------------------------
+
+TITLE: Get Push Results API Call Example (JavaScript)
+DESCRIPTION: Example of calling the `getReport` method to retrieve push delivery statistics for specified task IDs. This API supports querying results for `toList` or `toApp` messages.
+SOURCE: https://doc.dcloud.net.cn/uniCloud/uni-cloud-push/api
+
+LANGUAGE: JavaScript
+CODE:
+```
+await uniPush.getReport(OBJECT)
+```
+
+----------------------------------------
+
+TITLE: beginPath Method
+DESCRIPTION: Starts a new path by emptying the list of subpaths. Call this method when you want to create a new, independent drawing path.
+SOURCE: https://doc.dcloud.net.cn/uni-app-x/dom/drawablecontext
+
+LANGUAGE: APIDOC
+CODE:
+```
+beginPath(): void
+```
+
+----------------------------------------
+
+TITLE: Query Device Count API Request Body Example
+DESCRIPTION: An example JSON request body for the `getClientCount` API, demonstrating how to specify tag-based filtering criteria using `key`, `values`, and `opt_type` for logical operations.
+SOURCE: https://doc.dcloud.net.cn/uniCloud/uni-cloud-push/api
+
+LANGUAGE: JSON
+CODE:
+```
+{
+    "tag": [
+         {
+            "key":"phone_type",
+            "values": [
+                "android"
+            ],
+            "opt_type":"and"
+        },
+        {
+            "key":"region",
+            "values": [
+                "11000000"
+            ],
+            "opt_type":"not"
+        },
+         {
+            "key":"custom_tag",
+            "values": [
+                "tag1",
+                "tag2"
+            ],
+            "opt_type":"or"
+        }
+    ]
+}
+```
+
+----------------------------------------
+
+TITLE: UniPay getPayProviderFromCloud API Reference
+DESCRIPTION: Detailed API documentation for the getPayProviderFromCloud method, including parameters and return values.
+SOURCE: https://doc.dcloud.net.cn/uniCloud/uni-pay/uni-app-x
+
+LANGUAGE: APIDOC
+CODE:
+```
+Method: getPayProviderFromCloud
+Parameters: None
+Return Values:
+  wxpay: boolean
+    Description: Whether WeChat Pay is supported.
+  alipay: boolean
+    Description: Whether Alipay is supported.
+  provider: array<string>
+    Description: List of supported payment providers, e.g., ["wxpay","alipay"].
+```
+
+----------------------------------------
+
+TITLE: Common uni-app API Usage Examples
+DESCRIPTION: Illustrates how to use common uni-app APIs, specifically demonstrating `uniIDHasRole` for user role verification and biometric authentication (fingerprint/face unlock) with references to their official documentation.
+SOURCE: https://doc.dcloud.net.cn/uniCloud/uni-starter
+
+LANGUAGE: APIDOC
+CODE:
+```
+uniIDHasRole:
+  Description: Check if the current user has a specific role.
+  Demo Page: /pages/grid/grid
+  API Documentation: https://uniapp.dcloud.io/api/global?id=uniidhasrole
+Biometric Authentication:
+  Description: Implement fingerprint or face unlock functionality.
+  Demo Page: /pages/ucenter/settings/settings
+  API Documentation: https://uniapp.dcloud.io/api/system/authentication
+```
+
+----------------------------------------
+
+TITLE: UniPay getRefund API Reference
+DESCRIPTION: Detailed API documentation for the getRefund method, including parameters and return values.
+SOURCE: https://doc.dcloud.net.cn/uniCloud/uni-pay/uni-app-x
+
+LANGUAGE: APIDOC
+CODE:
+```
+Method: getRefund
+Parameters:
+  out_trade_no: string (Required)
+    Description: Plugin order number
+  out_refund_no: string (Required, one of out_trade_no or out_refund_no)
+    Description: Plugin refund order number
+  refund_desc: string (Optional)
+    Description: Refund description
+  refund_fee: int (Optional)
+    Description: Refund amount, in cents (e.g., 100 = 1 yuan)
+Return Values:
+  result: object
+    Description: Result returned by the third-party provider.
+  pay_order: object
+    Description: Payment order information.
+```
+
+----------------------------------------
+
+TITLE: Get Push Results API Response Body Example
+DESCRIPTION: An example JSON response body for the `getReport` API, showing detailed statistics for a given task ID, including total counts, Getui (GT) channel specific counts, and custom action counts.
+SOURCE: https://doc.dcloud.net.cn/uniCloud/uni-cloud-push/api
+
+LANGUAGE: JSON
+CODE:
+```
+ {
+    "errCode":0,
+    "errMsg":"success",
+    "data": {
+        "$taskid": {
+            "total": {
+                "msg_num":4,
+                "target_num":4,
+                "receive_num":4,
+                "display_num":2,
+                "click_num":2
+            },
+            "gt": {
+                "target_num":2,
+                "receive_num":2,
+                "display_num":1,
+                "click_num":1
+            },
+            "actionCntMap": {
+                "$actionId":2
+            }
+        }
+    }
+}
+```
+
+----------------------------------------
+
+TITLE: ImageMogr2 Sharpen Usage Example
+DESCRIPTION: Example demonstrating how to apply sharpening to an image by setting the sharpen parameter to 1 using the imageMogr2 API.
+SOURCE: https://doc.dcloud.net.cn/uniCloud/ext-storage/dev
+
+LANGUAGE: URL
+CODE:
+```
+https://dn-odum9helk.qbox.me/resource/gogopher.jpg?imageMogr2/sharpen/1
+```
+
+----------------------------------------
+
+TITLE: UniPay refund API Reference
+DESCRIPTION: Detailed API documentation for the refund method, including parameters and return values.
+SOURCE: https://doc.dcloud.net.cn/uniCloud/uni-pay/uni-app-x
+
+LANGUAGE: APIDOC
+CODE:
+```
+Method: refund
+Parameters:
+  out_trade_no: string (Required, one of out_trade_no or out_refund_no)
+    Description: Plugin order number
+  out_refund_no: string (Required, one of out_trade_no or out_refund_no)
+    Description: Plugin refund order number
+  refund_desc: string (Optional)
+    Description: Refund description
+  refund_fee: int (Optional)
+    Description: Refund amount, in cents (e.g., 100 = 1 yuan)
+Return Values:
+  result: object
+    Description: Result returned by the third-party provider.
+```
+
+----------------------------------------
+
+TITLE: uni-pay Component Method API Reference
+DESCRIPTION: Detailed API documentation for the `uni-pay` component, listing all available methods, their purposes, and linking to further details. These methods are invoked via `this.$refs.pay.methodName()`.
+SOURCE: https://doc.dcloud.net.cn/uniCloud/uni-pay/uni-app
+
+LANGUAGE: APIDOC
+CODE:
+```
+Component: uni-pay
+  Methods:
+    open(): Initiate payment - opens the payment cashier pop-up.
+    createOrder(): Directly initiate payment without opening the cashier.
+    getOrder(): Query order status.
+    refund(): Initiate a refund (requires specific permissions).
+    getRefund(): Query refund status.
+    closeOrder(): Close an order.
+    getPayProviderFromCloud(): Retrieve supported payment providers.
+    getProviderAppId(): Get the appid from payment configuration (e.g., WeChat official account appid for code).
+    getOpenid(code: string): Get openid based on a given code (e.g., WeChat official account code exchange).
+```
+
+----------------------------------------
+
+TITLE: API Documentation and Example for Array.prototype.reduce (callbackfn, initialValue)
+DESCRIPTION: Detailed API specification for the `reduce` method when used with both `callbackfn` and `initialValue` parameters. Providing `initialValue` ensures the accumulator starts with a defined value, preventing errors on empty arrays and allowing processing from the first array element. Includes a code example demonstrating its use to sum array elements.
+SOURCE: https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/array
+
+LANGUAGE: APIDOC
+CODE:
+```
+reduce(callbackfn: (previousValue: T, currentValue: T, currentIndex: number, array: Array<T>) => T, initialValue: T)
+
+Parameters:
+  callbackfn: (previousValue: T, currentValue: T, currentIndex: number, array: Array<T>) => T
+    Description: Function to execute on each element in the array. Its return value becomes the previousValue argument for the next call. For the last call, its return value is the return value of reduce().
+    Parameters for callbackfn:
+      previousValue: The value returned from the previous call to callbackFn. On first call, if initialValue is specified, it's that value; otherwise, array[0].
+      currentValue: The current element being processed in the array. On first call, if initialValue is specified, it's array[0]; otherwise, array[1].
+      currentIndex: The index of the current element being processed. On first call, if initialValue is specified, it's 0; otherwise, 1.
+      array: The array reduce() was called upon.
+  initialValue: T
+    Description: The value to initialize the accumulator with for the first call of the callback. If initialValue is specified, callbackFn starts execution with the first value in the array as currentValue. If not specified, the accumulator is initialized with the first value in the array, and callbackFn starts execution with the second value as currentValue. In this case, an error is thrown if the array is empty.
+
+Returns:
+  Type: T
+  Description: The single value that results from the reduction.
+```
+
+LANGUAGE: UTS
+CODE:
+```
+const array1: number[] = [1, 2, 3, 4];
+const initialValue: number = 0;
+const sumWithInitial = array1.reduce(
+  (previousValue: number, currentValue: number): number => previousValue + currentValue,
+  initialValue
+);
+console.log(sumWithInitial)//10
+```
+
+----------------------------------------
+
+TITLE: UniPay getOrder API Reference
+DESCRIPTION: Detailed API documentation for the getOrder method, including parameters and return values.
+SOURCE: https://doc.dcloud.net.cn/uniCloud/uni-pay/uni-app-x
+
+LANGUAGE: APIDOC
+CODE:
+```
+Method: getOrder
+Parameters:
+  out_trade_no: string (Required, one of out_trade_no or transaction_id)
+    Description: Plugin order number
+  transaction_id: string (Required, one of out_trade_no or transaction_id)
+    Description: Third-party payment transaction number
+  await_notify: boolean (Optional, default: false)
+    Description: Whether to wait for asynchronous notification to complete. Set to false for faster response, true to wait for async callback completion.
+Return Values:
+  has_paid: boolean
+    Description: Indicates if user has successfully paid (only indicates payment, async callback logic might not be complete).
+  user_order_success: boolean
+    Description: Whether user's asynchronous notification logic has fully completed without exceptions (recommended for frontend to judge payment success).
+  out_trade_no: string
+    Description: Payment plugin order number.
+  transaction_id: string
+    Description: Third-party payment transaction number (returned only if payment successful).
+  status: int
+    Description: Current payment order status. -1: closed, 0: unpaid, 1: paid, 2: partially refunded, 3: fully refunded.
+  pay_order: object
+    Description: Complete payment order information.
+```
+
+----------------------------------------
+
+TITLE: File Opening API: uni.openDocument Alternative
+DESCRIPTION: The uni.openDocument API for opening files in uni-app x is available through examples in hello uts or dedicated plugins from the marketplace.
+SOURCE: https://doc.dcloud.net.cn/uni-app-x/api/ext
+
+LANGUAGE: APIDOC
+CODE:
+```
+uni.openDocument
+```
+
+----------------------------------------
+
+TITLE: Example: Basic GET Request with uniCloud.request
+DESCRIPTION: This example illustrates a basic usage of `uniCloud.request` to perform a GET request to a specified URL. It demonstrates how to access the `statusCode` and `data` properties from the response object returned by the method.
+SOURCE: https://doc.dcloud.net.cn/uniCloud/cf-functions
+
+LANGUAGE: JavaScript
+CODE:
+```
+const res = await uniCloud.request({
+  url: 'https://example.com'
+})
+console.log(res.statusCode)
+console.log(res.data)
+```
+
+----------------------------------------
+
+TITLE: API: getPayProviderFromCloud Parameters and Return Values
+DESCRIPTION: Detailed documentation for the 'getPayProviderFromCloud' method, including its input parameters (none) and the structure of the returned data.
+SOURCE: https://doc.dcloud.net.cn/uniCloud/uni-pay/uni-app
+
+LANGUAGE: APIDOC
+CODE:
+```
+Method: getPayProviderFromCloud
+Parameters: None
+Return Values:
+  wxpay: boolean - Whether WeChat Pay is supported.
+  alipay: boolean - Whether Alipay is supported.
+  provider: array<string> - Array of supported payment providers, e.g., ["wxpay", "alipay"].
+```
+
+----------------------------------------
+
+TITLE: API: getRefund Parameters and Return Values
+DESCRIPTION: Detailed documentation for the 'getRefund' method, including its input parameters and the structure of the returned data.
+SOURCE: https://doc.dcloud.net.cn/uniCloud/uni-pay/uni-app
+
+LANGUAGE: APIDOC
+CODE:
+```
+Method: getRefund
+Parameters:
+  out_trade_no: string (required) - Plugin order number.
+Return Values:
+  result: object - Result returned by the third-party provider.
+  pay_order: object - Payment order information.
+```
+
+----------------------------------------
+
+TITLE: Example: Open App Authorize Setting in uni-app x
+DESCRIPTION: This example demonstrates how to use `uni.openAppAuthorizeSetting` within a uni-app x application. It provides a button that, when tapped, invokes the API and logs the success result to the console. This API is specifically for App platforms and not supported on Web.
+SOURCE: https://doc.dcloud.net.cn/uni-app-x/api/open-app-authorize-setting
+
+LANGUAGE: uni-app
+CODE:
+```
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex:1">
+  <!-- #endif -->
+    <button type="primary" style="margin: 20px;" @tap="go">跳转系统授权管理页</button>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script>
+  export default {
+    data() {
+      return {
+
+      }
+    },
+    methods: {
+      go() {
+         uni.openAppAuthorizeSetting({
+           success (res) {
+             console.log(res)
+           }
+         })
+      }
+    }
+  }
+</script>
+
+<style>
+
+</style>
+```
+
+----------------------------------------
+
+TITLE: API: getOrder Parameters and Return Values
+DESCRIPTION: Detailed documentation for the 'getOrder' method, including its input parameters and the structure of the returned data.
+SOURCE: https://doc.dcloud.net.cn/uniCloud/uni-pay/uni-app
+
+LANGUAGE: APIDOC
+CODE:
+```
+Method: getOrder
+Parameters:
+  out_trade_no: string (required, one of out_trade_no or transaction_id) - Plugin order number
+  transaction_id: string (required, one of out_trade_no or transaction_id) - Third-party payment transaction number
+  await_notify: boolean (optional, default: false) - Whether to wait for asynchronous notification completion. Set to false for faster response, true if subsequent data depends on callback logic.
+Return Values:
+  has_paid: boolean - Indicates if user has paid successfully (system's async callback logic might not be complete).
+  user_order_success: boolean - Indicates if user's async notification logic is fully completed and without exceptions (recommended for frontend to determine payment success).
+  out_trade_no: string - Payment plugin order number.
+  transaction_id: string - Third-party payment transaction number (returned only if payment is successful).
+  status: int - Current payment order status: -1: closed, 0: unpaid, 1: paid, 2: partially refunded, 3: fully refunded.
+  pay_order: object - Complete payment order information.
+```
+
+----------------------------------------
+
+TITLE: UniPush API Common Response Body Example
+DESCRIPTION: An example of a common response body structure returned by UniPush APIs, including valid and invalid client IDs and detailed device information for successful operations.
+SOURCE: https://doc.dcloud.net.cn/uniCloud/uni-cloud-push/api
+
+LANGUAGE: JSON
+CODE:
+```
+{
+    "errCode":0,
+    "errMsg":"success",
+    "data":{
+        "invalidCids":[
+            "invalidCid1",
+            "invalidCid2",
+            "invalidCid3"
+        ],
+        "validCids":{
+            "${cid1}":{
+                "client_app_id":"client_app_id",
+                "package_name":"com.getui.demo",
+                "device_token":"device_token",
+                "phone_type":1,
+                "phoneModel":"vv",
+                "notificationSwitch":true,
+                "createTime":"2021-06-30 00:00:00",
+                "loginFreq":10
+            }
+        }
+    }
+}
+```
+
+----------------------------------------
+
+TITLE: UniPay closeOrder API Reference
+DESCRIPTION: Detailed API documentation for the closeOrder method, including parameters and return values.
+SOURCE: https://doc.dcloud.net.cn/uniCloud/uni-pay/uni-app-x
+
+LANGUAGE: APIDOC
+CODE:
+```
+Method: closeOrder
+Parameters:
+  out_trade_no: string (Required)
+    Description: Plugin order number
+Return Values:
+  result: object
+    Description: Result returned by the third-party provider.
+```
+
+----------------------------------------
+
+TITLE: Query Device Count API Call Example (JavaScript)
+DESCRIPTION: Example of calling the `getClientCount` method to query the total number of devices based on specified criteria using the UniPush SDK.
+SOURCE: https://doc.dcloud.net.cn/uniCloud/uni-cloud-push/api
+
+LANGUAGE: JavaScript
+CODE:
+```
+await uniPush.getClientCount(OBJECT)
+```
+
+----------------------------------------
+
+TITLE: Query Device Count API Response Body Example
+DESCRIPTION: An example JSON response body for the `getClientCount` API, showing the `user_count` field which indicates the number of devices matching the query criteria.
+SOURCE: https://doc.dcloud.net.cn/uniCloud/uni-cloud-push/api
+
+LANGUAGE: JSON
+CODE:
+```
+{
+    "errCode": 0,
+    "errMsg": "success",
+    "data":{
+        "user_count": 0
+    }
+}
+```
+
+----------------------------------------
+
+TITLE: UniPay getProviderAppId API Reference
+DESCRIPTION: Detailed API documentation for the getProviderAppId method, including parameters and return values.
+SOURCE: https://doc.dcloud.net.cn/uniCloud/uni-pay/uni-app-x
+
+LANGUAGE: APIDOC
+CODE:
+```
+Method: getProviderAppId
+Parameters:
+  provider: string (Required)
+    Description: Payment provider, e.g., wxpay, alipay
+  provider_pay_type: string (Required)
+    Description: Payment provider type, e.g., jsapi
+Return Values:
+  appid: string
+    Description: The AppId.
+```

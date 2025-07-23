@@ -1,0 +1,86 @@
+{
+	"pages": [{
+		"path": "pages/index/index",
+		"style": { "navigationBarTitleText": "首页" }
+	},
+	{
+		"path": "pages/discover/discover",
+		"style": { "navigationBarTitleText": "发现" }
+	},
+	{
+		"path": "pages/discover/search",
+		"style": { "navigationBarTitleText": "搜索" }
+	},
+	{
+		"path": "pages/library/library",
+		"style": { "navigationBarTitleText": "音乐库" }
+	},
+	{
+		"path": "pages/profile/profile",
+		"style": { "navigationBarTitleText": "我的" }
+	},
+	{
+		"path": "pages/player/player",
+		"style": { 
+			"navigationBarTitleText": "播放器",
+			"navigationStyle": "custom"
+		}
+	},
+	{
+		"path": "pages/article/detail",
+		"style": { 
+			"navigationBarTitleText": "文章详情",
+			"navigationStyle": "custom",
+			"enablePullDownRefresh": false
+		}
+	},
+	{
+		"path": "pages/tabbar/index/index",
+		"style": {
+			"navigationBarTitleText": "First UI",
+			"enablePullDownRefresh": false,
+			"mp-weixin": {
+				"disableScroll": true
+			},
+			"app-plus": {
+				"bounce": "none"
+			},
+			"mp-alipay": {
+				"allowsBounceVertical": "NO"
+			},
+			"mp-baidu": {
+				"disableScroll": true
+			}
+		}
+
+	}],
+	"easycom": {
+		"autoscan": true,
+		"custom": {
+			"fui-(.*)": "@/components/firstui/fui-$1/fui-$1.vue"
+		}
+	},
+	"globalStyle": {
+		"backgroundTextStyle": "dark",
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "First UI",
+		"navigationBarBackgroundColor": "#FFFFFF",
+		"backgroundColor": "#F1F4FA",
+		"backgroundColorTop": "#F1F4FA",
+		"backgroundColorBottom": "#F1F4FA"
+	},
+	"tabBar": {
+		"custom": true,
+		"color": "#8d96a0",
+		"selectedColor": "#4CD964",
+		"backgroundColor": "#ffffff",
+		"borderStyle": "black",
+		"list": [
+			{ "pagePath": "pages/index/index", "iconPath": "static/icons/home-default.svg", "selectedIconPath": "static/icons/home-selected.svg", "text": "首页" },
+			{ "pagePath": "pages/discover/discover", "iconPath": "static/icons/discover-default.svg", "selectedIconPath": "static/icons/discover-selected.svg", "text": "发现" },
+			{ "pagePath": "pages/library/library", "iconPath": "static/icons/library-default.svg", "selectedIconPath": "static/icons/library-selected.svg", "text": "音乐库" },
+			{ "pagePath": "pages/profile/profile", "iconPath": "static/icons/profile-default.svg", "selectedIconPath": "static/icons/profile-selected.svg", "text": "我的" }
+		]
+	},
+	"resizable": true
+}

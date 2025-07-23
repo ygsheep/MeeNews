@@ -1,0 +1,647 @@
+openapi: 3.0.3
+info:
+  title: 羊咩快报 API
+  version: 1.0.0
+  description: 后端接口文档
+paths:
+  /ai/tts:
+    post:
+      operationId: ai_tts_create
+      description: AI音频生成任务API（Mock实现）
+      tags:
+      - ai
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /ai/tts/{task_id}:
+    get:
+      operationId: ai_tts_retrieve
+      description: AI音频生成任务状态API（Mock实现）
+      parameters:
+      - in: path
+        name: task_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - ai
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /auth/login:
+    post:
+      operationId: auth_login_create
+      description: 用户登录API
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /auth/refresh:
+    post:
+      operationId: auth_refresh_create
+      description: Token刷新API，返回自定义响应格式
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /auth/register:
+    post:
+      operationId: auth_register_create
+      description: 用户注册API
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /categories:
+    get:
+      operationId: categories_list
+      description: 分类列表API
+      tags:
+      - categories
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NewsCategory'
+          description: ''
+  /content/:
+    get:
+      operationId: content_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - content
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRawNewsList'
+          description: ''
+  /content/{content_id}/stats:
+    get:
+      operationId: content_stats_retrieve
+      description: 内容统计API，支持获取总计和按天统计
+      parameters:
+      - in: path
+        name: content_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - content
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /content/{id}:
+    get:
+      operationId: content_retrieve
+      description: 内容详情API
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - content
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RawNews'
+          description: ''
+  /content/{id}/moderation:
+    get:
+      operationId: content_moderation_retrieve
+      description: 内容审核API，支持提交审核和获取审核历史
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - content
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: content_moderation_create
+      description: 内容审核API，支持提交审核和获取审核历史
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - content
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /content/{id}/tags:
+    get:
+      operationId: content_tags_retrieve
+      description: 内容标签关联API，支持打标签和获取标签
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - content
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: content_tags_create_2
+      description: 内容标签关联API，支持打标签和获取标签
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - content
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /content/{id}/:
+    get:
+      operationId: content_retrieve_2
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this raw news.
+        required: true
+      tags:
+      - content
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RawNews'
+          description: ''
+  /content/{id}/category/:
+    get:
+      operationId: content_category_list
+      description: 获取指定分类下的内容，支持分页、排序、时长筛选。
+      summary: 根据分类获取内容
+      parameters:
+      - in: query
+        name: duration_max
+        schema:
+          type: integer
+        description: 最大时长(秒)
+      - in: query
+        name: duration_min
+        schema:
+          type: integer
+        description: 最小时长(秒)
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this raw news.
+        required: true
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: 页码
+      - in: query
+        name: page_size
+        schema:
+          type: integer
+        description: 每页数量
+      - in: query
+        name: sort
+        schema:
+          type: string
+        description: 排序方式(latest|popular|hot|duration)
+      tags:
+      - content
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRawNewsList'
+              examples:
+                科技资讯内容示例:
+                  value:
+                    count: 123
+                    next: http://api.example.org/accounts/?page=4
+                    previous: http://api.example.org/accounts/?page=2
+                    results:
+                    - id: 101
+                      title: AI驱动的新闻推荐系统上线
+                      content: 羊咩快报平台正式发布AI驱动的新闻推荐系统，提升用户个性化体验。
+                      summary: AI推荐系统助力个性化资讯推送。
+                      author: 新闻编辑部
+                      source_url: https://news.yangmie.com/ai/101
+                      image_urls:
+                      - https://cdn.yangmie.com/images/ai-news-101.jpg
+                      published_at: '2025-07-20T10:00:00Z'
+                      category: 2
+                      tags:
+                      - AI
+                      - 推荐
+                      - 新闻
+                      keywords:
+                      - 人工智能
+                      - 个性化推荐
+                      - 新闻平台
+                      sentiment_score: 0.92
+                      importance_score: 0.95
+                      is_processed: true
+                      is_duplicate: false
+                      language: zh-CN
+                      created_at: '2025-07-20T10:00:00Z'
+                      updated_at: '2025-07-20T10:00:00Z'
+                  description: 真实业务场景下的科技资讯内容示例。
+          description: ''
+  /content/recommend:
+    get:
+      operationId: content_recommend_list
+      description: 内容推荐API（Mock数据）
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - content
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRawNewsList'
+          description: ''
+  /content/search:
+    get:
+      operationId: content_search_list
+      description: 内容搜索API
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - content
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRawNewsList'
+          description: ''
+  /content/tags:
+    get:
+      operationId: content_tags_list
+      description: 内容标签列表与创建API
+      tags:
+      - content
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ContentTag'
+          description: ''
+    post:
+      operationId: content_tags_create
+      description: 内容标签列表与创建API
+      tags:
+      - content
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContentTag'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ContentTag'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ContentTag'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentTag'
+          description: ''
+  /users/avatar:
+    post:
+      operationId: users_avatar_create
+      description: 头像上传API
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /users/profile:
+    get:
+      operationId: users_profile_retrieve
+      description: 获取和更新用户信息API
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+    put:
+      operationId: users_profile_update
+      description: 获取和更新用户信息API
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+components:
+  schemas:
+    ContentTag:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 50
+        color_code:
+          type: string
+          nullable: true
+          maxLength: 7
+        description:
+          type: string
+          nullable: true
+        usage_count:
+          type: integer
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - name
+      - updated_at
+    NewsCategory:
+      type: object
+      description: 资讯分类序列化器，支持递归children
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 50
+        name_en:
+          type: string
+          nullable: true
+          maxLength: 50
+        description:
+          type: string
+          nullable: true
+        icon_url:
+          type: string
+          format: uri
+          nullable: true
+          maxLength: 255
+        color_code:
+          type: string
+          nullable: true
+          maxLength: 7
+        children:
+          type: string
+          readOnly: true
+      required:
+      - children
+      - id
+      - name
+    PaginatedRawNewsList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RawNews'
+    RawNews:
+      type: object
+      description: 原始新闻内容序列化器
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        source:
+          type: string
+          nullable: true
+          maxLength: 100
+        title:
+          type: string
+          maxLength: 500
+        content:
+          type: string
+        summary:
+          type: string
+          nullable: true
+        author:
+          type: string
+          nullable: true
+          maxLength: 100
+        source_url:
+          type: string
+          format: uri
+          maxLength: 500
+        image_urls:
+          nullable: true
+        published_at:
+          type: string
+          format: date-time
+        crawled_at:
+          type: string
+          format: date-time
+          readOnly: true
+        language:
+          type: string
+          maxLength: 10
+        tags:
+          nullable: true
+        keywords:
+          nullable: true
+        sentiment_score:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,1}(?:\.\d{0,2})?$
+          nullable: true
+        importance_score:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,1}(?:\.\d{0,2})?$
+          nullable: true
+        is_processed:
+          type: boolean
+        is_duplicate:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        category:
+          type: integer
+          nullable: true
+        duplicate_of:
+          type: integer
+          nullable: true
+      required:
+      - content
+      - crawled_at
+      - created_at
+      - id
+      - published_at
+      - source_url
+      - title
+      - updated_at
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+      required:
+      - access
+      - refresh
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

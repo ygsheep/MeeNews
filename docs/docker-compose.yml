@@ -1,0 +1,30 @@
+version: "3.8"
+services:
+  mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: meenews
+      MYSQL_USER: meenews
+      MYSQL_PASSWORD: meenews
+    ports:
+      - "3306:3306"
+    volumes:
+      - /develop/PodmanData/mysql:/var/lib/mysql
+
+  mongo:
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: 123456
+    ports:
+      - "27017:27017"
+    volumes:
+      - /develop/PodmanData/mongo:/data/db
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - /develop/PodmanData/redis:/data

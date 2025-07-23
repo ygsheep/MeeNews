@@ -1,0 +1,177 @@
+@startuml 羊咩快报数据库分层架构
+!theme plain
+skinparam packageStyle rect
+skinparam defaultFontName "Microsoft YaHei"
+
+title 羊咩快报AI资讯平台 - 数据库分层架构图
+
+package "用户管理层 (User Management Layer)" #E8F4FD {
+    [users] as users
+    [user_preferences] as user_prefs
+    [user_profiles] as user_profiles
+    [user_behavior_stats] as user_stats
+    
+    users ||--|| user_prefs
+    users ||--|| user_profiles
+    users ||--o{ user_stats
+}
+
+package "内容管理层 (Content Management Layer)" #F0F8E8 {
+    package "资讯源管理" {
+        [news_sources] as sources
+        [news_categories] as categories
+    }
+    
+    package "原始内容" {
+        [raw_news] as raw_news
+    }
+    
+    package "AI生成内容" {
+        [ai_commentary] as commentary
+        [ai_audio_content] as audio
+        [ai_video_content] as video
+    }
+    
+    sources ||--o{ raw_news
+    categories ||--o{ raw_news
+    raw_news ||--o{ commentary
+    commentary ||--|| audio
+    commentary ||--|| video
+}
+
+package "AI服务层 (AI Service Layer)" #FFF8E1 {
+    [ai_model_configs] as ai_models
+    [content_generation_tasks] as ai_tasks
+    [api_usage_stats] as ai_stats
+    
+    ai_models ||--o{ ai_tasks
+    ai_models ||--o{ ai_stats
+    raw_news ||--o{ ai_tasks
+}
+
+package "社区互动层 (Community Layer)" #F3E5F5 {
+    package "社交关系" {
+        [user_follows] as follows
+        [topics] as topics
+        [topic_follows] as topic_follows
+    }
+    
+    package "内容互动" {
+        [comments] as comments
+        [likes] as likes
+        [shares] as shares
+        [favorites] as favorites
+    }
+    
+    users ||--o{ follows
+    users ||--o{ topics
+    users ||--o{ topic_follows
+    topics ||--o{ topic_follows
+    
+    users ||--o{ comments
+    users ||--o{ likes
+    users ||--o{ shares
+    users ||--o{ favorites
+    
+    comments ||--o{ comments : "回复"
+}
+
+package "行为分析层 (Analytics Layer)" #E8F5E8 {
+    [play_history] as play_history
+    [content_interaction_stats] as content_stats
+    [search_history] as search_history
+    [popular_searches] as popular_searches
+    
+    users ||--o{ play_history
+    users ||--o{ search_history
+    play_history ||--o{ content_stats : "聚合"
+    search_history ||--o{ popular_searches : "聚合"
+}
+
+package "推荐系统层 (Recommendation Layer)" #FFF3E0 {
+    [recommendations] as recommendations
+    [trending_topics] as trending
+    
+    users ||--o{ recommendations
+    user_profiles ||--o{ recommendations : "基于画像"
+    user_stats ||--o{ recommendations : "基于行为"
+    content_stats ||--o{ trending : "生成热点"
+}
+
+package "通知系统层 (Notification Layer)" #E1F5FE {
+    [notifications] as notifications
+    [push_records] as push_records
+    
+    users ||--o{ notifications
+    notifications ||--o{ push_records
+}
+
+package "系统配置层 (System Configuration Layer)" #FAFAFA {
+    [system_configs] as configs
+    [content_tags] as tags
+    [content_tag_relations] as tag_relations
+    [voice_types] as voices
+    
+    tags ||--o{ tag_relations
+    commentary ||--o{ tag_relations : "标注"
+    audio ||--o{ tag_relations : "标注"
+    video ||--o{ tag_relations : "标注"
+}
+
+package "管理后台层 (Admin Layer)" #FFEBEE {
+    [admin_users] as admin_users
+    [content_moderation] as moderation
+    
+    admin_users ||--o{ moderation
+    admin_users ||--o{ commentary : "审核"
+    admin_users ||--o{ tag_relations : "标注"
+}
+
+' 跨层关系
+raw_news .|> play_history : "播放记录"
+commentary .|> play_history : "播放记录"
+audio .|> play_history : "播放记录"
+video .|> play_history : "播放记录"
+
+commentary .|> comments : "评论"
+audio .|> comments : "评论"
+video .|> comments : "评论"
+
+commentary .|> likes : "点赞"
+audio .|> likes : "点赞"
+video .|> likes : "点赞"
+
+commentary .|> shares : "分享"
+audio .|> shares : "分享"
+video .|> shares : "分享"
+
+note right of users
+  核心用户实体
+  - 个人信息管理
+  - 偏好设置
+  - 行为画像
+end note
+
+note right of ai_models
+  AI服务配置
+  - 模型参数管理
+  - 成本控制
+  - 性能监控
+end note
+
+note bottom of play_history
+  用户行为数据
+  - 播放记录
+  - 完成率统计
+  - 设备信息
+  支持数据分析和推荐
+end note
+
+note bottom of recommendations
+  推荐算法输出
+  - 协同过滤
+  - 内容推荐
+  - 实时推荐
+end note
+
+@enduml

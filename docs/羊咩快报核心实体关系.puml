@@ -1,0 +1,182 @@
+@startuml 羊咩快报核心实体关系
+!define table(x) class x << (T,#FFAAAA) >>
+!theme plain
+skinparam defaultFontName "Microsoft YaHei"
+
+title 羊咩快报AI资讯平台 - 核心实体关系图
+
+' 核心实体定义
+table(users) {
+    + id: BIGINT [PK]
+    --
+    username: VARCHAR(50)
+    email: VARCHAR(100)
+    nickname: VARCHAR(50)
+    premium_until: DATETIME
+    interest_tags: JSON
+    location: VARCHAR(100)
+}
+
+table(raw_news) {
+    + id: BIGINT [PK]
+    --
+    title: VARCHAR(500)
+    content: TEXT
+    source_url: VARCHAR(500)
+    category_id: BIGINT [FK]
+    importance_score: DECIMAL(3,2)
+    sentiment_score: DECIMAL(3,2)
+    published_at: TIMESTAMP
+}
+
+table(ai_commentary) {
+    + id: BIGINT [PK]
+    --
+    raw_news_id: BIGINT [FK]
+    title: VARCHAR(500)
+    script: TEXT
+    commentary_style: ENUM
+    quality_score: DECIMAL(3,2)
+    is_published: BOOLEAN
+    published_at: TIMESTAMP
+}
+
+table(ai_audio_content) {
+    + id: BIGINT [PK]
+    --
+    commentary_id: BIGINT [FK]
+    audio_url: VARCHAR(500)
+    duration: INT
+    voice_type: VARCHAR(50)
+    play_count: BIGINT
+    like_count: INT
+}
+
+table(ai_video_content) {
+    + id: BIGINT [PK]
+    --
+    commentary_id: BIGINT [FK]
+    video_url: VARCHAR(500)
+    duration: INT
+    avatar_type: VARCHAR(50)
+    play_count: BIGINT
+    like_count: INT
+}
+
+table(play_history) {
+    + id: BIGINT [PK]
+    --
+    user_id: BIGINT [FK]
+    content_type: ENUM
+    content_id: BIGINT
+    completion_rate: DECIMAL(5,2)
+    play_source: ENUM
+    created_at: TIMESTAMP
+}
+
+table(comments) {
+    + id: BIGINT [PK]
+    --
+    user_id: BIGINT [FK]
+    content_type: ENUM
+    content_id: BIGINT
+    content: TEXT
+    like_count: INT
+    created_at: TIMESTAMP
+}
+
+table(recommendations) {
+    + id: BIGINT [PK]
+    --
+    user_id: BIGINT [FK]
+    content_type: ENUM
+    content_id: BIGINT
+    algorithm_type: ENUM
+    recommendation_score: DECIMAL(5,4)
+    is_clicked: BOOLEAN
+}
+
+table(user_profiles) {
+    + id: BIGINT [PK]
+    --
+    user_id: BIGINT [FK]
+    interest_categories: JSON
+    interaction_frequency: ENUM
+    preferred_content_length: ENUM
+}
+
+table(news_categories) {
+    + id: BIGINT [PK]
+    --
+    name: VARCHAR(50)
+    description: TEXT
+    keywords: JSON
+    sort_order: INT
+}
+
+' 核心关系
+users ||--|| user_profiles : "1:1\n用户画像"
+users ||--o{ play_history : "1:N\n播放历史"
+users ||--o{ comments : "1:N\n用户评论"
+users ||--o{ recommendations : "1:N\n个性推荐"
+
+news_categories ||--o{ raw_news : "1:N\n新闻分类"
+raw_news ||--o{ ai_commentary : "1:N\nAI解说"
+
+ai_commentary ||--|| ai_audio_content : "1:1\n音频内容"
+ai_commentary ||--|| ai_video_content : "1:1\n视频内容"
+
+ai_audio_content ||--o{ play_history : "播放"
+ai_video_content ||--o{ play_history : "播放"
+ai_commentary ||--o{ play_history : "播放"
+
+ai_audio_content ||--o{ comments : "评论"
+ai_video_content ||--o{ comments : "评论"
+ai_commentary ||--o{ comments : "评论"
+
+ai_audio_content ||--o{ recommendations : "推荐"
+ai_video_content ||--o{ recommendations : "推荐"
+ai_commentary ||--o{ recommendations : "推荐"
+
+' 业务流程注释
+note top of users
+  **用户中心**
+  - 个人信息管理
+  - 偏好设置
+  - 会员权益
+end note
+
+note top of raw_news
+  **内容源头**
+  - 新闻爬取
+  - 内容分析
+  - 质量评分
+end note
+
+note top of ai_commentary
+  **AI核心**
+  - 智能解说生成
+  - 多风格支持
+  - 质量控制
+end note
+
+note right of play_history
+  **行为数据**
+  - 播放完成率
+  - 用户偏好分析
+  - 推荐算法输入
+end note
+
+note bottom of recommendations
+  **智能推荐**
+  - 协同过滤
+  - 内容推荐
+  - 实时计算
+end note
+
+' 数据流向
+play_history .down.> user_profiles : "行为分析"
+user_profiles .down.> recommendations : "画像推荐"
+comments .up.> user_profiles : "互动分析"
+
+@enduml
